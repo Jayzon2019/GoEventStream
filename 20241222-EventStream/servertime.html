@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Time Stream</title>
+    <style>
+        /* Fixed location in the HTML body to display the time */
+        #time-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            font-size: 32px;
+            color: #333;
+            text-align: center;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Server Time (Real-time Update)</h1>
+
+    <!-- Fixed location where the time will be displayed -->
+    <div id="time-container">Waiting for server time...</div>
+
+    <script>
+        // Create a new EventSource to listen for server-sent events
+        const eventSource = new EventSource('http://localhost:3000/eventStreamHandler'); // The URL of the Go server's SSE endpoint
+
+        // Handle the messages received from the server
+        eventSource.onmessage = function(event) {
+            const timeContainer = document.getElementById('time-container');
+            const serverTime = event.data; // The server time received in the event data
+
+            // Update the content of the time container with the server time
+            timeContainer.innerHTML = `Current Server Time: ${serverTime}`;
+        };
+
+        // Optional: Handle errors in case something goes wrong with the event stream
+        // eventSource.onerror = function(error) {
+        //     console.error("Error occurred with the event stream:", error);
+        // };
+
+         // Handle errors
+         eventSource.onerror = function() {
+            console.error('Error with SSE connection');
+            eventSource.close();
+        };
+    </script>
+</body>
+</html>

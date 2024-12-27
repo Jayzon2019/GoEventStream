@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #events {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Event Stream</h1>
+    <div id="events"></div>
+
+    <script>
+        // Connect to the SSE endpoint
+        //const eventSource = new EventSource('http://172.29.80.1:3000/eventStream');
+        const eventSource = new EventSource('http://172.29.80.1:3000/eventStreamHandler');
+
+        // Listen for incoming messages
+        eventSource.onmessage = function(event) {
+            // Display the received event data
+            const eventContainer = document.getElementById('events');
+            const newEvent = document.createElement('p');
+            newEvent.textContent = event.data;
+            eventContainer.appendChild(newEvent);
+        };
+
+        // Handle errors
+        eventSource.onerror = function() {
+            console.error('Error with SSE connection');
+            eventSource.close();
+        };
+    </script>
+</body>
+</html>
